@@ -1,0 +1,117 @@
+package org.novelvox.assignment;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.junit.platform.commons.util.StringUtils;
+import org.novelvox.assignment.model.ServiceProviderData;
+import org.novelvox.assignment.util.ServiceUtils;
+
+public class Solution {
+	private static final String PATH_TO_CSV = "C:\\Users\\vivekkumar.gupta\\Downloads\\Supported_Data.csv";
+	private List<ServiceProviderData> serviceProviderDataList = new ArrayList<>();
+
+	public static void main(String[] args) {
+		Solution solution = new Solution();
+		solution.processCSVFile();
+		System.out.println(solution.serviceProviderDataList);
+		ServiceUtils.getHighSpeedServiceProvidersEveryMonth(solution.serviceProviderDataList);
+	}
+
+	private void addServiceProvidersData(String serviceProviderName, List<String> monthsList, List<Integer> serviceProviderDataum) {
+		if (monthsList.size() == serviceProviderDataum.size()) {
+			Map<String, Map<Month, Integer>> sMap = new TreeMap<>();
+			Map<Month, Integer> serviceProviderData = new TreeMap<>();
+			for (int idx = 0; idx < monthsList.size(); idx++) {
+				serviceProviderData.putIfAbsent(getMonth(monthsList.get(idx)), serviceProviderDataum.get(idx));
+			}
+			sMap.putIfAbsent(serviceProviderName, serviceProviderData);
+			ServiceProviderData serviceProvider = new ServiceProviderData();
+			serviceProvider.setServiceProviderData(sMap);
+			serviceProviderDataList.add(serviceProvider);
+		}
+	}
+
+	private void processCSVFile() {
+		try (BufferedReader csvReader = new BufferedReader(new FileReader(PATH_TO_CSV))) {
+			String row = null;
+			int months = -1;
+			List<String> monthsList = new ArrayList<>();
+			while ((row = csvReader.readLine()) != null) {
+				String[] data = row.split(",");
+				if (months < 0) {
+					for (String str : data) {
+						if (StringUtils.isNotBlank(str)) {
+							monthsList.add(str);
+						}
+					}
+					months++;
+				} else {
+					String serviceProviderName = null;
+					List<Integer> serviceProviderDataum = new ArrayList<Integer>();
+					for (String str : data) {
+						if (serviceProviderName == null) {
+							serviceProviderName = str;
+						} else {
+							serviceProviderDataum.add(Integer.valueOf(str));
+						}
+					}
+					addServiceProvidersData(serviceProviderName, monthsList, serviceProviderDataum);
+				}
+			}
+		} catch (IOException ex) {
+			System.out.println("Exception while reading file from path : " + PATH_TO_CSV);
+			ex.printStackTrace();
+		}
+	}
+	
+	private Month getMonth(String mon) {
+		Month result = null;
+		switch(mon) {
+			case "Jan" :
+				result = Month.JANUARY;
+				break;
+			case "Feb" :
+				result = Month.FEBRUARY;
+				break;
+			case "March" :
+				result = Month.MARCH;
+				break;
+			case "April" :
+				result = Month.APRIL;
+				break;
+			case "May" :
+				result = Month.MAY;
+				break;
+			case "June" :
+				result = Month.JUNE;
+				break;
+			case "July" :
+				result = Month.JULY;
+				break;
+			case "Aug" :
+				result = Month.AUGUST;
+				break;
+			case "Sept" :
+				result = Month.SEPTEMBER;
+				break;
+			case "Oct" :
+				result = Month.OCTOBER;
+				break;
+			case "Nov" :
+				result = Month.NOVEMBER;
+				break;
+			case "Dec" :
+				result = Month.DECEMBER;
+				break;
+		}
+		return result;
+	}
+
+}

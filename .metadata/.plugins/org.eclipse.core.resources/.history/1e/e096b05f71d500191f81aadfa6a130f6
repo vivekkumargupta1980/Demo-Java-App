@@ -1,0 +1,26 @@
+package org.novelvox.assignment.model;
+
+import java.time.Month;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class ServiceProviderData {
+	private Map<String, Map<Month, Integer>> serviceProviderData = new TreeMap<>();
+
+	public ServiceProviderData() {
+	}
+
+	public Map<String, Map<Month, Integer>> getServiceProviderData() {
+		return serviceProviderData;
+	}
+
+	public void setServiceProviderData(Map<String, Map<Month, Integer>> serviceProviderData) {
+		this.serviceProviderData = serviceProviderData;
+	}
+
+	@Override
+	public String toString() {
+		return "ServiceProviderData [serviceProviderData=" + serviceProviderData + "]";
+	}
+
+}
